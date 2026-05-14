@@ -1,9 +1,4 @@
-// moduloCatalogo.js
-
 const Catalogo = {
-  // ==========================================
-  // 1. DATOS
-  // ==========================================
   productos: {
     cafes: [
       { nombre: "Mokka", precio: 55, cantidad: "300ml" },
@@ -24,35 +19,25 @@ const Catalogo = {
     ]
   },
 
-  // ==========================================
-  // 2. FUNCIONES
-  // ==========================================
-
-  // Obtener todos los productos (Menú completo)
   obtenerMenuCompleto: function() {
     return this.productos;
   },
 
-  // Obtener un solo producto por su nombre
   obtenerProducto: function(nombreProducto) {
-    // 1. Recorremos cada categoría (cafes, postres, etc.)
     for (let categoria in this.productos) {
       let listaDeProductos = this.productos[categoria];
       
-      // 2. Usamos un bucle 'for' clásico para revisar producto por producto
       for (let i = 0; i < listaDeProductos.length; i++) {
         let productoActual = listaDeProductos[i];
         
-        // 3. Comparamos los nombres
         if (productoActual.nombre.toLowerCase() === nombreProducto.toLowerCase()) {
-          return productoActual; // Lo encontramos, lo devolvemos
+          return productoActual;
         }
       }
     }
-    return null; // Si termina todos los bucles y no encontró nada
+    return null;
   },
 
-  // Obtener solo el precio 
   obtenerPrecio: function(nombreProducto) {
     let producto = this.obtenerProducto(nombreProducto);
     if (producto !== null) {
@@ -63,7 +48,6 @@ const Catalogo = {
     }
   },
 
-  // Añadir un nuevo producto a una categoría específica
   agregarProducto: function(categoria, nuevoProducto) {
     if (this.productos[categoria] !== undefined) {
       this.productos[categoria].push(nuevoProducto);
@@ -75,7 +59,6 @@ const Catalogo = {
     }
   },
 
-  // Actualizar los datos de un producto existente
   actualizarProducto: function(nombreProducto, nuevosDatos) {
     for (let categoria in this.productos) {
       let listaDeProductos = this.productos[categoria];
@@ -84,7 +67,6 @@ const Catalogo = {
         let productoActual = listaDeProductos[i];
         
         if (productoActual.nombre.toLowerCase() === nombreProducto.toLowerCase()) {
-          // Si lo encuentra, actualizamos sus propiedades una por una
           for (let propiedad in nuevosDatos) {
             productoActual[propiedad] = nuevosDatos[propiedad];
           }
@@ -97,14 +79,12 @@ const Catalogo = {
     return false;
   },
 
-  // Eliminar un producto del catálogo
   eliminarProducto: function(nombreProducto) {
     for (let categoria in this.productos) {
       let listaDeProductos = this.productos[categoria];
       
       for (let i = 0; i < listaDeProductos.length; i++) {
         if (listaDeProductos[i].nombre.toLowerCase() === nombreProducto.toLowerCase()) {
-          // El método splice elimina elementos. Le decimos: en la posición 'i', borra '1' elemento.
           listaDeProductos.splice(i, 1);
           console.log("Éxito: " + nombreProducto + " ha sido eliminado del menú.");
           return true;
@@ -115,3 +95,5 @@ const Catalogo = {
     return false;
   }
 };
+
+module.exports = Catalogo;

@@ -1,3 +1,5 @@
+const Catalogo = require('./moduloCatalogo');
+
 const Caja = {
   listaDePedidos: [],
   totalAcumulado: 0,
@@ -32,3 +34,5 @@ const Caja = {
     return this.totalAcumulado;
   }
 };
+
+module.exports = Caja;

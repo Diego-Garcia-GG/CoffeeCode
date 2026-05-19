@@ -1,6 +1,9 @@
-const CatalogoRef = (typeof window !== 'undefined' && window.Catalogo) 
-    ? window.Catalogo 
-    : require('./moduloCatalogo');
+let CatalogoRef;
+if (typeof require !== 'undefined' && typeof module !== 'undefined') {
+  CatalogoRef = require('./moduloCatalogo');
+} else {
+  CatalogoRef = Catalogo;
+}
 
 const Caja = {
   listaDePedidos: [],

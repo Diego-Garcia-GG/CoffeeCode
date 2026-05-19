@@ -42,7 +42,7 @@ window.filtrarMenu = function(filtro) {
             break;
         default:
             // Para 'todos', mostramos las categorías separadas como antes
-            const menuCompleto = Catalogo.obtenerMenuCompleto();
+            const menuCompleto = Catalogo.productos;
             let menuHtml = '';
             Object.keys(menuCompleto).forEach(categoria => {
                 menuHtml += `<h3>${categoria.toUpperCase()}</h3><ul>`;

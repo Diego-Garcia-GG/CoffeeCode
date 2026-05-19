@@ -34,10 +34,6 @@ const Catalogo = {
     return todos;
   },
 
-  // ==========================================
-  // OBJETIVOS DEL CLIENTE
-  // ==========================================
-
   mostrarMenuDinamico: function() {
     console.log("--- MENÚ DE LA CAFETERÍA ---");
     for (let categoria in this.productos) {
@@ -61,9 +57,6 @@ const Catalogo = {
     return this._obtenerTodoEnUnaLista();
   },
 
-  // ==========================================
-  // OBJETIVOS DE COCINA / CAJA
-  // ==========================================
 
   // Usamos find() para traer UN solo objeto
   obtenerProducto: function(nombreProducto) {
@@ -112,7 +105,7 @@ const Catalogo = {
   },
 
   // ==========================================
-  // CRUD BÁSICO (Gestión del Catálogo)
+  // CRUD BÁSICO
   // ==========================================
 
   agregarProducto: function(categoria, nuevoProducto) {
@@ -163,7 +156,7 @@ const Catalogo = {
   },
 
   // ==========================================
-  // OBJETIVOS DE COCINA (Filtros y Búsquedas)
+  // Filtros y Búsquedas
   // ==========================================
 
   // Une todas las categorías en una sola lista para facilitar el uso de filter y find

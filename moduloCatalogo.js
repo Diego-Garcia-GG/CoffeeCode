@@ -61,9 +61,6 @@ const Catalogo = {
     return this._obtenerTodoEnUnaLista();
   },
 
-  // ==========================================
-  // OBJETIVOS DE COCINA / CAJA
-  // ==========================================
 
   // Usamos find() para traer UN solo objeto
   obtenerProducto: function(nombreProducto) {

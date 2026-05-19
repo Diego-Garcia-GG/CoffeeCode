@@ -64,6 +64,5 @@ function mostrarResumen() {
   rl.close();
 }
 
-// Iniciar la app interactiva
 mostrarMenu();
 preguntarProducto();

@@ -189,4 +189,6 @@ const Catalogo = {
   }
 };
 
-module.exports = Catalogo;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Catalogo;
+}

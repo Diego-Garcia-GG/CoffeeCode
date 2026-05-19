@@ -1,11 +1,13 @@
-const Catalogo = require('./moduloCatalogo');
+const CatalogoRef = (typeof window !== 'undefined' && window.Catalogo) 
+    ? window.Catalogo 
+    : require('./moduloCatalogo');
 
 const Caja = {
   listaDePedidos: [],
   totalAcumulado: 0,
 
   agregarPedidos: function (nombreProducto, cantidad) {
-    let precioProducto = Catalogo.obtenerPrecio(nombreProducto);
+    let precioProducto = CatalogoRef.obtenerPrecio(nombreProducto);
 
     if (precioProducto !== null) {
       let subtotal = precioProducto * cantidad;
@@ -51,4 +53,6 @@ const Caja = {
   }
 };
 
-module.exports = Caja;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Caja;
+}

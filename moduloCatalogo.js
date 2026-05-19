@@ -53,12 +53,11 @@ const Catalogo = {
   },
 
   obtenerProductosDisponibles: function() {
-    // Por ahora, asumimos que todos los del catálogo están disponibles
     return this._obtenerTodoEnUnaLista();
   },
 
 
-  // Usamos find() para traer UN solo objeto
+  // Usamos find() para traer un solo objeto
   obtenerProducto: function(nombreProducto) {
     let todosLosProductos = this._obtenerTodoEnUnaLista();
     
@@ -96,7 +95,6 @@ const Catalogo = {
   },
 
   obtenerBebidas: function() {
-    // Solo unimos cafés y bebidas frías (ignoramos postres)
     return this.productos.cafes.concat(this.productos.bebidasFrias);
   },
 
@@ -104,9 +102,7 @@ const Catalogo = {
     return this.productos.postres;
   },
 
-  // ==========================================
-  // CRUD BÁSICO
-  // ==========================================
+  // CRUD
 
   agregarProducto: function(categoria, nuevoProducto) {
     if (this.productos[categoria] !== undefined) {
@@ -155,9 +151,7 @@ const Catalogo = {
     return false;
   },
 
-  // ==========================================
   // Filtros y Búsquedas
-  // ==========================================
 
   // Une todas las categorías en una sola lista para facilitar el uso de filter y find
   _obtenerTodosLosProductos: function() {
@@ -180,7 +174,6 @@ const Catalogo = {
     return todos.filter(producto => producto.precio > 60);
   },
 
-  // Une los arrays de cafés y bebidas frías directamente
   obtenerBebidas: function() {
     return this.productos.cafes.concat(this.productos.bebidasFrias);
   },

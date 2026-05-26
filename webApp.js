@@ -120,10 +120,21 @@ function actualizarResumen() {
 
 window.mostrarResumen = function() {
     actualizarResumen();
-    document.getElementById('mensaje').style.color = "blue";
-    document.getElementById('mensaje').innerText = "Pedido finalizado.";
     document.getElementById('producto').disabled = true;
     document.getElementById('cantidad').disabled = true;
+
+    Caja.procesarPedido(
+        function(mensajeListo) {
+            const divMensaje = document.getElementById('mensaje');
+            divMensaje.style.color = "green";
+            divMensaje.innerText = mensajeListo;
+        },
+        function(mensajeCancelado) {
+            const divMensaje = document.getElementById('mensaje');
+            divMensaje.style.color = "red";
+            divMensaje.innerText = mensajeCancelado;
+        }
+    );
 }
 
 // Inicializar cuando cargue la página

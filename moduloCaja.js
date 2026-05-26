@@ -53,6 +53,28 @@ const Caja = {
 
   obtenerTotalAcumulado: function () {
     return this.totalAcumulado;
+  },
+
+  procesarPedido: function (onListo, onCancelado) {
+    if (this.listaDePedidos.length === 0) {
+      if (typeof onCancelado === 'function') {
+        onCancelado("El pedido está vacío.");
+      }
+      return;
+    }
+
+    // Simulación probabilística (85% éxito / 15% cancelación)
+    const exito = Math.random() > 0.15;
+
+    if (exito) {
+      if (typeof onListo === 'function') {
+        onListo("¡El pedido ha sido preparado y está listo!");
+      }
+    } else {
+      if (typeof onCancelado === 'function') {
+        onCancelado("El pedido fue cancelado debido a falta de insumos.");
+      }
+    }
   }
 };
 

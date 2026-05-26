@@ -8,6 +8,27 @@ if (typeof require !== 'undefined' && typeof module !== 'undefined') {
 const Caja = {
   listaDePedidos: [],
   totalAcumulado: 0,
+  contadorPedidos: 0,
+  listeners: {
+    pedidoListo: [],
+    pedidoCancelado: []
+  },
+
+  registrarEvento: function(evento, callback) {
+    if (this.listeners[evento]) {
+      this.listeners[evento].push(callback);
+      return true;
+    }
+    return false;
+  },
+
+  _notificar: function(evento, datosPedido) {
+    if (this.listeners[evento]) {
+      this.listeners[evento].forEach(callback => {
+        callback(datosPedido);
+      });
+    }
+  },
 
   agregarPedidos: function (nombreProducto, cantidad) {
     let precioProducto = CatalogoRef.obtenerPrecio(nombreProducto);
@@ -16,10 +37,12 @@ const Caja = {
       let subtotal = precioProducto * cantidad;
 
       const nuevoPedido = {
+        id: ++this.contadorPedidos,
         producto: nombreProducto,
         cantidad: cantidad,
         precioUnitario: precioProducto,
-        subtotal: subtotal
+        subtotal: subtotal,
+        estado: 'pendiente'
       };
 
       this.listaDePedidos.push(nuevoPedido);
@@ -53,6 +76,39 @@ const Caja = {
 
   obtenerTotalAcumulado: function () {
     return this.totalAcumulado;
+  },
+
+  cambiarEstadoPedido: function(idPedido, nuevoEstado) {
+    const pedido = this.listaDePedidos.find(p => p.id === idPedido);
+
+    if (pedido) {
+      pedido.estado = nuevoEstado;
+
+      if (nuevoEstado === 'listo') {
+        this._notificar('pedidoListo', {
+          id: pedido.id,
+          producto: pedido.producto,
+          cantidad: pedido.cantidad,
+          timestamp: new Date()
+        });
+      } else if (nuevoEstado === 'cancelado') {
+        this.totalAcumulado -= pedido.subtotal;
+        this._notificar('pedidoCancelado', {
+          id: pedido.id,
+          producto: pedido.producto,
+          cantidad: pedido.cantidad,
+          subtotal: pedido.subtotal,
+          timestamp: new Date()
+        });
+      }
+
+      return true;
+    }
+    return false;
+  },
+
+  obtenerPedidoPorId: function(idPedido) {
+    return this.listaDePedidos.find(p => p.id === idPedido);
   }
 };
 

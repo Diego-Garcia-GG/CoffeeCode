@@ -6,7 +6,6 @@ const Catalogo = {
     cafes: [
       { nombre: "Mokka", precio: 55, cantidad: "300ml" },
       { nombre: "Capucchino", precio: 45, cantidad: "250ml" },
-      // Agregamos la propiedad enPromocion a algunos productos
       { nombre: "Espresso", precio: 30, cantidad: "60ml", enPromocion: true },
       { nombre: "Latte Macchiato", precio: 50, cantidad: "300ml" }
     ],
@@ -23,16 +22,17 @@ const Catalogo = {
     ]
   },
 
-  // Función interna (utilidad) para unir todos los productos en un solo array.
-  // Facilita muchísimo usar filter() y find() después.
   _obtenerTodoEnUnaLista: function() {
     let todos = [];
     for (let categoria in this.productos) {
-      // concat() une dos arrays en uno solo
       todos = todos.concat(this.productos[categoria]);
     }
     return todos;
   },
+
+  // ==========================================
+  // OBJETIVOS DEL CLIENTE
+  // ==========================================
 
   mostrarMenuDinamico: function() {
     console.log("--- MENÚ DE LA CAFETERÍA ---");
@@ -48,7 +48,6 @@ const Catalogo = {
 
   obtenerPromociones: function() {
     let todosLosProductos = this._obtenerTodoEnUnaLista();
-    // filter() crea una lista nueva solo con los que tengan enPromocion === true
     return todosLosProductos.filter(producto => producto.enPromocion === true);
   },
 
@@ -57,7 +56,7 @@ const Catalogo = {
   },
 
 
-  // Usamos find() para traer un solo objeto
+  // Usamos find() para traer UN solo objeto
   obtenerProducto: function(nombreProducto) {
     let todosLosProductos = this._obtenerTodoEnUnaLista();
     
@@ -102,7 +101,9 @@ const Catalogo = {
     return this.productos.postres;
   },
 
-  // CRUD
+  // ==========================================
+  // CRUD 
+  // ==========================================
 
   agregarProducto: function(categoria, nuevoProducto) {
     if (this.productos[categoria] !== undefined) {
@@ -151,9 +152,10 @@ const Catalogo = {
     return false;
   },
 
-  // Filtros y Búsquedas
+  // ==========================================
+  // OBJETIVOS DE COCINA 
+  // ==========================================
 
-  // Une todas las categorías en una sola lista para facilitar el uso de filter y find
   _obtenerTodosLosProductos: function() {
     let todos = [];
     for (let categoria in this.productos) {
@@ -162,13 +164,11 @@ const Catalogo = {
     return todos;
   },
 
-  // Usa filter() para devolver un array con productos de $40 o menos
   obtenerProductosBaratos: function() {
     let todos = this._obtenerTodosLosProductos();
     return todos.filter(producto => producto.precio <= 40);
   },
 
-  // Usa filter() para devolver un array con productos mayores a $60
   obtenerProductosCaros: function() {
     let todos = this._obtenerTodosLosProductos();
     return todos.filter(producto => producto.precio > 60);
@@ -182,13 +182,42 @@ const Catalogo = {
     return this.productos.postres;
   },
 
-  // Usa find() para devolver un único objeto que coincida con el nombre
   buscarProductoEspecifico: function(nombreProducto) {
     let todos = this._obtenerTodosLosProductos();
     return todos.find(producto => producto.nombre.toLowerCase() === nombreProducto.toLowerCase());
+  },
+
+  // ==========================================================
+  // PROMESAS
+  // ==========================================================
+
+  prepararPedido: function(nombreProducto, hayIngredientes = true, errorCritico = false) {
+    return new Promise((resolve, reject) => {
+      // se valida si el producto existe en el catálogo
+      let producto = this.obtenerProducto(nombreProducto);
+
+      if (producto === null) {
+        reject("Error: '" + nombreProducto + "' no se encuentra en el menú.");
+        return; // Detiene la ejecución si no existe
+      }
+
+      console.log("Cocina: Iniciando preparación de '" + producto.nombre + "'...");
+
+      // simulación de pedido
+      setTimeout(() => {
+        if (errorCritico) {
+          // Caso 1: Falla el equipo (Promesa Rechazada)
+          reject("Falla en Cocina: Se ha descompuesto la cafetera/horno.");
+        } else if (!hayIngredientes) {
+          // Caso 2: Falta de insumos (Promesa Rechazada)
+          reject("Falta Ingrediente: Nos quedamos sin insumos para preparar '" + producto.nombre + "'.");
+        } else {
+          // Caso 3: Éxito (Promesa Resuelta)
+          resolve("¡Tu '" + producto.nombre + "' está listo para retirar! ");
+        }
+      }, 2000); 
+    });
   }
 };
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Catalogo;
-}
+module.exports = Catalogo;

@@ -63,18 +63,23 @@ const Caja = {
       return;
     }
 
-    // Simulación probabilística (85% éxito / 15% cancelación)
-    const exito = Math.random() > 0.15;
+    const promesas = this.listaDePedidos.map(item => {
+      const hayIngredientes = Math.random() > 0.90; // 88% probabilidad de tener ingredientes
+      const errorCritico = Math.random() > 0.01;     // 3% probabilidad de fallo crítico
+      return CatalogoRef.prepararPedido(item.producto, hayIngredientes, errorCritico);
+    });
 
-    if (exito) {
-      if (typeof onListo === 'function') {
-        onListo("¡El pedido ha sido preparado y está listo!");
-      }
-    } else {
-      if (typeof onCancelado === 'function') {
-        onCancelado("El pedido fue cancelado debido a falta de insumos.");
-      }
-    }
+    Promise.all(promesas)
+      .then(resultados => {
+        if (typeof onListo === 'function') {
+          onListo("¡El pedido está listo! Todos los productos se prepararon con éxito.");
+        }
+      })
+      .catch(error => {
+        if (typeof onCancelado === 'function') {
+          onCancelado(error);
+        }
+      });
   }
 };
 

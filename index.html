@@ -47,6 +47,32 @@
         <div id="resumen">No has agregado ningún producto.</div>
     </div>
 
+    <div class="container" id="seguimiento-pedido" style="display: none;">
+        <h2>Seguimiento de tu Pedido</h2>
+        <div class="pasos-seguimiento">
+            <div class="paso" id="paso-recibido">
+                <span class="icono">✓</span>
+                <span class="nombre-paso">Pedido Recibido</span>
+            </div>
+            <div class="paso" id="paso-preparando">
+                <span class="icono">✓</span>
+                <span class="nombre-paso">Preparando</span>
+            </div>
+            <div class="paso" id="paso-empacando">
+                <span class="icono">✓</span>
+                <span class="nombre-paso">Empacando</span>
+            </div>
+            <div class="paso" id="paso-final">
+                <span class="icono" id="icono-final">✓</span>
+                <span class="nombre-paso" id="nombre-final">Estado Final</span>
+            </div>
+        </div>
+        <div id="barra-progreso-contenedor">
+            <div id="barra-progreso"></div>
+        </div>
+        <div id="estado-texto" class="mensaje"></div>
+    </div>
+
     <script src="moduloCatalogo.js"></script>
     <script src="moduloCaja.js"></script>
     <script src="webApp.js"></script>

@@ -118,23 +118,129 @@ function actualizarResumen() {
     resumenDiv.innerHTML = html;
 }
 
+const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function iniciarSeguimiento(resultadoPedidoPromesa) {
+    const contenedor = document.getElementById('seguimiento-pedido');
+    contenedor.style.display = 'block';
+    
+    const pasoRecibido = document.getElementById('paso-recibido');
+    const pasoPreparando = document.getElementById('paso-preparando');
+    const pasoEmpacando = document.getElementById('paso-empacando');
+    const pasoFinal = document.getElementById('paso-final');
+    
+    const iconoFinal = document.getElementById('icono-final');
+    const nombreFinal = document.getElementById('nombre-final');
+    const barra = document.getElementById('barra-progreso');
+    const estadoTexto = document.getElementById('estado-texto');
+    
+    [pasoRecibido, pasoPreparando, pasoEmpacando, pasoFinal].forEach(p => {
+        p.className = 'paso';
+    });
+    pasoFinal.classList.remove('cancelado');
+    barra.style.width = '0%';
+    barra.style.background = 'linear-gradient(90deg, #ffd700, #00ff00)';
+    iconoFinal.innerText = '✓';
+    nombreFinal.innerText = 'Estado Final';
+    estadoTexto.innerText = '';
+    estadoTexto.style.color = '#fff';
+
+    // 1. Pedido Recibido
+    pasoRecibido.classList.add('activo');
+    estadoTexto.innerText = "Estado: Pedido recibido. Registrando en cocina...";
+    await esperar(1500);
+    
+    pasoRecibido.classList.remove('activo');
+    pasoRecibido.classList.add('completado');
+    barra.style.width = '33%';
+
+    // 2. Preparando
+    pasoPreparando.classList.add('activo');
+    estadoTexto.innerText = "Estado: Preparando tu pedido en la cocina (esperando confirmación)...";
+    
+    try {
+        // Promesas
+        const resultado = await resultadoPedidoPromesa;
+        
+        pasoPreparando.classList.remove('activo');
+        pasoPreparando.classList.add('completado');
+        barra.style.width = '66%';
+
+        // 3. Empacando
+        pasoEmpacando.classList.add('activo');
+        estadoTexto.innerText = "Estado: Empacando y sellando tus bebidas/postres...";
+        await esperar(1500);
+        
+        pasoEmpacando.classList.remove('activo');
+        pasoEmpacando.classList.add('completado');
+        barra.style.width = '100%';
+
+        // 4. Estado Final (Entregado)
+        pasoFinal.classList.add('activo');
+        pasoFinal.classList.add('completado');
+        iconoFinal.innerText = '✓';
+        nombreFinal.innerText = 'Entregado';
+        estadoTexto.innerText = "Estado: " + resultado.mensaje;
+        estadoTexto.style.color = "green";
+        
+        const divMensaje = document.getElementById('mensaje');
+        divMensaje.style.color = "green";
+        divMensaje.innerText = "¡Pedido finalizado con éxito!";
+    } catch (errorFallo) {
+        // En caso de que falle la preparación en cocina, se interrumpe y se cancela de inmediato
+        pasoPreparando.classList.remove('activo');
+        pasoPreparando.classList.add('cancelado');
+        
+        pasoFinal.classList.add('cancelado');
+        iconoFinal.innerText = '✗';
+        nombreFinal.innerText = 'Cancelado';
+        estadoTexto.innerText = "Estado: " + errorFallo;
+        estadoTexto.style.color = "red";
+        barra.style.background = 'red';
+        
+        const divMensaje = document.getElementById('mensaje');
+        divMensaje.style.color = "red";
+        divMensaje.innerText = "El pedido no pudo completarse.";
+    }
+}
+
 window.mostrarResumen = function() {
     actualizarResumen();
+    
+    // Si el pedido está vacío, mostrar error de inmediato sin animar
+    const pedidos = Caja.obtenerListaDePedidos();
+    if (pedidos.length === 0) {
+        const divMensaje = document.getElementById('mensaje');
+        divMensaje.style.color = "red";
+        divMensaje.innerText = "Error: No has agregado ningún producto al pedido.";
+        return;
+    }
+
     document.getElementById('producto').disabled = true;
     document.getElementById('cantidad').disabled = true;
 
-    Caja.procesarPedido(
-        function(mensajeListo) {
-            const divMensaje = document.getElementById('mensaje');
-            divMensaje.style.color = "green";
-            divMensaje.innerText = mensajeListo;
-        },
-        function(mensajeCancelado) {
-            const divMensaje = document.getElementById('mensaje');
-            divMensaje.style.color = "red";
-            divMensaje.innerText = mensajeCancelado;
-        }
-    );
+    // Deshabilitar botones para evitar clics dobles mientras procesa
+    const botones = document.querySelectorAll('button');
+    botones.forEach(btn => btn.disabled = true);
+
+    const divMensaje = document.getElementById('mensaje');
+    divMensaje.style.color = "blue";
+    divMensaje.innerText = "Pedido en proceso...";
+
+    // Envolver la ejecución del callback de procesarPedido en una promesa para esperar su resultado
+    const resultadoPedidoPromesa = new Promise((resolve, reject) => {
+        Caja.procesarPedido(
+            function(mensajeListo) {
+                resolve({ exito: true, mensaje: mensajeListo });
+            },
+            function(mensajeCancelado) {
+                reject(mensajeCancelado);
+            }
+        );
+    });
+
+    // Iniciar la animación asíncrona pasando la promesa del pedido
+    iniciarSeguimiento(resultadoPedidoPromesa);
 }
 
 // Inicializar cuando cargue la página

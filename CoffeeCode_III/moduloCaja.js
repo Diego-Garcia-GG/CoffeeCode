@@ -53,8 +53,6 @@ const Caja = {
 
   obtenerTotalAcumulado: function () {
     return this.totalAcumulado;
-<<<<<<< Updated upstream
-=======
   },
 
   procesarPedido: function (onListo, onCancelado) {
@@ -66,8 +64,8 @@ const Caja = {
     }
 
     const promesas = this.listaDePedidos.map(item => {
-      const hayIngredientes = Math.random() > 1.00; // 88% probabilidad de tener ingredientes
-      const errorCritico = Math.random() > 0;     // 3% probabilidad de fallo crítico
+      const hayIngredientes = Math.random() > 0.90; // 88% probabilidad de tener ingredientes
+      const errorCritico = Math.random() > 0.01;     // 3% probabilidad de fallo crítico
       return CatalogoRef.prepararPedido(item.producto, hayIngredientes, errorCritico);
     });
 
@@ -82,7 +80,6 @@ const Caja = {
           onCancelado(error);
         }
       });
->>>>>>> Stashed changes
   }
 };
 

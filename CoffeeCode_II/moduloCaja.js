@@ -53,36 +53,6 @@ const Caja = {
 
   obtenerTotalAcumulado: function () {
     return this.totalAcumulado;
-<<<<<<< Updated upstream
-=======
-  },
-
-  procesarPedido: function (onListo, onCancelado) {
-    if (this.listaDePedidos.length === 0) {
-      if (typeof onCancelado === 'function') {
-        onCancelado("El pedido está vacío.");
-      }
-      return;
-    }
-
-    const promesas = this.listaDePedidos.map(item => {
-      const hayIngredientes = Math.random() > 1.00; // 88% probabilidad de tener ingredientes
-      const errorCritico = Math.random() > 0;     // 3% probabilidad de fallo crítico
-      return CatalogoRef.prepararPedido(item.producto, hayIngredientes, errorCritico);
-    });
-
-    Promise.all(promesas)
-      .then(resultados => {
-        if (typeof onListo === 'function') {
-          onListo("¡El pedido está listo! Todos los productos se prepararon con éxito.");
-        }
-      })
-      .catch(error => {
-        if (typeof onCancelado === 'function') {
-          onCancelado(error);
-        }
-      });
->>>>>>> Stashed changes
   }
 };
 
